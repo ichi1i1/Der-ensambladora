@@ -61,11 +61,7 @@ DELIMITER ;
 
 
 DELIMITER //
-CREATE PROCEDURE modificarNombreConcesionaria(
-    IN p_id INT,
-    IN p_nombre VARCHAR(100),
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
+CREATE PROCEDURE modificarNombreConcesionaria(IN p_id INT,IN p_nombre VARCHAR(100),OUT nResultado INT,OUT cMensaje VARCHAR(256)
 )
 BEGIN
     SET nResultado = -1;
@@ -105,10 +101,7 @@ DELIMITER ;
 -- DROP PROCEDURE IF EXISTS AgregarInsumo;
 
 DELIMITER //
-CREATE PROCEDURE BajaProveedor(
-    IN p_id INT,
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
+CREATE PROCEDURE BajaProveedor(IN p_id INT,OUT nResultado INT,OUT cMensaje VARCHAR(256)
 )
 BEGIN
     -- Inicializar valores
@@ -125,12 +118,7 @@ END//
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE ModificarNombreProveedor(
-    IN p_id INT,
-    IN p_nombre VARCHAR(100),
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE ModificarNombreProveedor(IN p_id INT,IN p_nombre VARCHAR(100),OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     -- Inicializar valores
     SET nResultado = -1;
@@ -152,14 +140,7 @@ DELIMITER ;
 -- -------------------------------------------------------------------------------  
 
 DELIMITER //
-CREATE PROCEDURE AgregarInsumo(
-    IN p_tipoInsumo VARCHAR(100),
-    IN p_unidadMedida VARCHAR(45),
-    IN p_idProveedor INT,
-    IN p_precioUnitario FLOAT,
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE AgregarInsumo(IN p_tipoInsumo VARCHAR(100),IN p_unidadMedida VARCHAR(45),IN p_idProveedor INT,IN p_precioUnitario FLOAT,OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     DECLARE v_idInsumo INT;
     DECLARE v_idInsumoProveedor INT;
@@ -251,18 +232,9 @@ END//
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE ModificarInsumo(
-    IN p_idInsumo INT,
-    IN p_tipoInsumo VARCHAR(100),
-    IN p_unidadMedida VARCHAR(45),
-    IN p_idProveedor INT,
-    IN p_precioUnitario FLOAT,
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE ModificarInsumo(IN p_idInsumo INT,IN p_tipoInsumo VARCHAR(100),IN p_unidadMedida VARCHAR(45),IN p_idProveedor INT,IN p_precioUnitario FLOAT,OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     DECLARE v_count INT;
-
     -- Inicializar variables
     SET nResultado = -1;
     SET cMensaje = 'Insumo o proveedor no encontrado.';
@@ -302,15 +274,7 @@ DELIMITER ;
 -- -------------------------------------------------------------------------------  
 DELIMITER //
 
-CREATE PROCEDURE AltaPedidoConcesionaria(
-    IN p_idPedido INT,
-    IN p_idConcesionaria INT,
-    IN p_fechaEntregaEstimada DATE,
-    IN p_fechaEntregaReal DATE,
-    IN p_fechaPedido DATE,
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE AltaPedidoConcesionaria(IN p_idPedido INT,IN p_idConcesionaria INT,IN p_fechaEntregaEstimada DATE,IN p_fechaEntregaReal DATE,IN p_fechaPedido DATE,OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     SET nResultado = -1;
     SET cMensaje = 'Error desconocido.';
@@ -334,10 +298,7 @@ DELIMITER ;
 
 
 DELIMITER //
-CREATE PROCEDURE BajaPedidoConcesionaria(
-    IN p_idPedido INT,
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
+CREATE PROCEDURE BajaPedidoConcesionaria(IN p_idPedido INT,OUT nResultado INT,OUT cMensaje VARCHAR(256)
 )
 BEGIN
     SET nResultado = -1;
@@ -360,15 +321,7 @@ END//
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE ModificarPedidoConcesionaria(
-    IN p_idPedido INT,
-    IN p_idConcesionaria INT,
-    IN p_fechaEntregaEstimada DATE,
-    IN p_fechaEntregaReal DATE,
-    IN p_fechaPedido DATE,
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE ModificarPedidoConcesionaria(IN p_idPedido INT,IN p_idConcesionaria INT,IN p_fechaEntregaEstimada DATE,IN p_fechaEntregaReal DATE,IN p_fechaPedido DATE,OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     SET nResultado = -1;
     SET cMensaje = 'Pedido o concesionaria no encontrado.';
@@ -422,11 +375,7 @@ DELIMITER ;
 
 DELIMITER //
 
-CREATE PROCEDURE bajaLineaMontaje(
-    IN p_ModeloAuto VARCHAR(100),
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE bajaLineaMontaje(IN p_ModeloAuto VARCHAR(100),OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     -- Inicializar valores por defecto
     SET nResultado = -1;
@@ -440,17 +389,11 @@ BEGIN
         SET cMensaje = 'Línea de montaje eliminada con éxito.';
     END IF;
 END//
-
 DELIMITER ;
 
 DELIMITER //
 
-CREATE PROCEDURE modificarLineaMontaje(
-    IN p_ModeloAuto VARCHAR(100),
-    IN p_nuevaCapacidadMaximaMes INT,
-    OUT nResultado INT,
-    OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE modificarLineaMontaje(IN p_ModeloAuto VARCHAR(100),IN p_nuevaCapacidadMaximaMes INT,OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     -- Inicializar valores por defecto
     SET nResultado = -1;
