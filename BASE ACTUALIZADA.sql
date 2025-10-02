@@ -261,28 +261,28 @@ CREATE INDEX `fk_Vehiculo_ModeloAuto1_idx` ON `PlantaAutomotrizEnsambladora`.`Ve
 -- -----------------------------------------------------
 -- Table `PlantaAutomotrizEnsambladora`.`RegistoEstacion`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`RegistoEstacion` (
-  `idRegistoEstacion` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`RegistroEstacion` (
+  `idRegistroEstacion` INT NOT NULL,
   `Vehiculo_idVehiculo` INT NOT NULL,
   `FechaInicio` DATETIME NOT NULL,
   `FechaFin` DATETIME NULL,
   `LineaMontajeEstacion_idLineaMontajeHasEstacion` INT NOT NULL,
-  PRIMARY KEY (`idRegistoEstacion`, `Vehiculo_idVehiculo`, `LineaMontajeEstacion_idLineaMontajeHasEstacion`),
-  CONSTRAINT `fk_RegistoEstacion_Vehiculo1`
+  PRIMARY KEY (`idRegistroEstacion`, `Vehiculo_idVehiculo`, `LineaMontajeEstacion_idLineaMontajeHasEstacion`),
+  CONSTRAINT `fk_RegistroEstacion_Vehiculo1`
     FOREIGN KEY (`Vehiculo_idVehiculo`)
     REFERENCES `PlantaAutomotrizEnsambladora`.`Vehiculo` (`idVehiculo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_RegistoEstacion_LineaMontajeEstacion1`
+  CONSTRAINT `fk_RegistroEstacion_LineaMontajeEstacion1`
     FOREIGN KEY (`LineaMontajeEstacion_idLineaMontajeHasEstacion`)
     REFERENCES `PlantaAutomotrizEnsambladora`.`LineaMontajeEstacion` (`idLineaMontajeHasEstacion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_RegistoEstacion_Vehiculo1_idx` ON `PlantaAutomotrizEnsambladora`.`RegistoEstacion` (`Vehiculo_idVehiculo` ASC) VISIBLE;
+CREATE INDEX `fk_RegistroEstacion_Vehiculo1_idx` ON `PlantaAutomotrizEnsambladora`.`RegistroEstacion` (`Vehiculo_idVehiculo` ASC) VISIBLE;
 
-CREATE INDEX `fk_RegistoEstacion_LineaMontajeEstacion1_idx` ON `PlantaAutomotrizEnsambladora`.`RegistoEstacion` (`LineaMontajeEstacion_idLineaMontajeHasEstacion` ASC) VISIBLE;
+CREATE INDEX `fk_RegistroEstacion_LineaMontajeEstacion1_idx` ON `PlantaAutomotrizEnsambladora`.`RegistroEstacion` (`LineaMontajeEstacion_idLineaMontajeHasEstacion` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
