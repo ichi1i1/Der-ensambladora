@@ -347,8 +347,7 @@ DELIMITER ;
 -- -------------------------------------------------------------------------------  
 DELIMITER //
 
-CREATE PROCEDURE altaLineaMontaje(IN p_ModeloAuto VARCHAR(100), IN p_capacidadMaximaMes INT, OUT nResultado INT,OUT cMensaje VARCHAR(256)
-)
+CREATE PROCEDURE altaLineaMontaje(IN p_ModeloAuto VARCHAR(100), IN p_capacidadMaximaMes INT, OUT nResultado INT,OUT cMensaje VARCHAR(256))
 BEGIN
     -- Inicializar resultado y mensaje
     SET nResultado = -1;
@@ -359,7 +358,7 @@ BEGIN
 
         -- Verificar si ya existe la línea de montaje para ese modelo
         IF NOT EXISTS (SELECT 1 FROM LineaMontaje lm JOIN ModeloAuto ma ON lm.ModeloAuto_idModeloAuto = ma.idModeloAuto WHERE ma.modelo = p_ModeloAuto) THEN
-			INSERT INTO LineaMontaje (ModeloAuto_idModeloAuto, capacidadMaximaPorMes) VALUES ((SELECT ma.idModeloAuto FROM ModeloAuto ma WHERE ma.modelo = p_ModeloAuto), p_capacidadMaximaMes);
+			INSERT INTO LineaMontaje (ModeloAuto_idModeloAuto, capacidadMaximaMes) VALUES ((SELECT ma.idModeloAuto FROM ModeloAuto ma WHERE ma.modelo = p_ModeloAuto), p_capacidadMaximaMes);
 			SET nResultado = 0;
             SET cMensaje = 'Línea de montaje insertada con éxito.';
         END IF;
