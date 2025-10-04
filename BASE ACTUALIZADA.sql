@@ -29,7 +29,7 @@ ENGINE = InnoDB;
 -- Table `PlantaAutomotrizEnsambladora`.`LineaMontaje`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`LineaMontaje` (
-  `idLineaMontaje` INT NOT NULL AUTO_INCREMENT,
+  `idLineaMontaje` INT NOT NULL auto_increment,
   `ModeloAuto_idModeloAuto` INT NOT NULL,
   `CapacidadMaximaMes` INT NULL,
   PRIMARY KEY (`idLineaMontaje`),
@@ -48,7 +48,14 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`Estacion` (
   `idEstacion` INT NOT NULL AUTO_INCREMENT,
   `actividad` VARCHAR(45) NULL,
-  PRIMARY KEY (`idEstacion`))
+  `LineaMontaje_idLineaMontaje` INT NOT NULL,
+  PRIMARY KEY (`idEstacion`),
+  INDEX `fk_Estacion_LineaMontaje1_idx` (`LineaMontaje_idLineaMontaje` ASC) VISIBLE,
+  CONSTRAINT `fk_Estacion_LineaMontaje1`
+    FOREIGN KEY (`LineaMontaje_idLineaMontaje`)
+    REFERENCES `PlantaAutomotrizEnsambladora`.`LineaMontaje` (`idLineaMontaje`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -80,7 +87,6 @@ CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`PedidoConcesionaria` 
   `idPedidoConcesionaria` INT NOT NULL AUTO_INCREMENT,
   `Concesionaria_idConcesionaria` INT NOT NULL,
   `FechaDeEntregaEstimada` DATE NOT NULL,
-  `FechaDeEntregaReal` DATE NOT NULL,
   `FechaPedido` DATE NOT NULL,
   PRIMARY KEY (`idPedidoConcesionaria`),
   INDEX `fk_PedidoConsesinaria_Consecionaria1_idx` (`Concesionaria_idConcesionaria` ASC) VISIBLE,
@@ -99,29 +105,6 @@ CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`Proveedor` (
   `idProveedor` INT NOT NULL AUTO_INCREMENT,
   `nombreProveedor` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idProveedor`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `PlantaAutomotrizEnsambladora`.`LineaMontajeEstacion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`LineaMontajeEstacion` (
-  `IdLineaMontajeEstacion` INT NOT NULL,
-  `LineaMontaje_idLineaMontaje` INT NOT NULL,
-  `Estacion_idEstacion` INT NOT NULL,
-  PRIMARY KEY (`IdLineaMontajeEstacion`),
-  INDEX `fk_LineaMontaje_has_Estacion_Estacion1_idx` (`Estacion_idEstacion` ASC) VISIBLE,
-  INDEX `fk_LineaMontaje_has_Estacion_LineaMontaje1_idx` (`LineaMontaje_idLineaMontaje` ASC) VISIBLE,
-  CONSTRAINT `fk_LineaMontaje_has_Estacion_LineaMontaje1`
-    FOREIGN KEY (`LineaMontaje_idLineaMontaje`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`LineaMontaje` (`idLineaMontaje`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_LineaMontaje_has_Estacion_Estacion1`
-    FOREIGN KEY (`Estacion_idEstacion`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`Estacion` (`idEstacion`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -188,20 +171,20 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`RegistroEstacion` (
   `idRegistroEstacion` INT NOT NULL AUTO_INCREMENT,
   `Vehiculo_idVehiculo` INT NOT NULL,
-  `LineaMontajeEstacion_IdLineaMontajeEstacion` INT NOT NULL,
   `FechaInicio` DATETIME NOT NULL,
   `FechaFin` DATETIME NULL,
+  `Estacion_idEstacion` INT NOT NULL,
   PRIMARY KEY (`idRegistroEstacion`),
   INDEX `fk_RegistoEstacion_Vehiculo1_idx` (`Vehiculo_idVehiculo` ASC) VISIBLE,
-  INDEX `fk_RegistroEstacion_LineaMontajeEstacion1_idx` (`LineaMontajeEstacion_IdLineaMontajeEstacion` ASC) VISIBLE,
+  INDEX `fk_RegistroEstacion_Estacion1_idx` (`Estacion_idEstacion` ASC) VISIBLE,
   CONSTRAINT `fk_RegistoEstacion_Vehiculo1`
     FOREIGN KEY (`Vehiculo_idVehiculo`)
     REFERENCES `PlantaAutomotrizEnsambladora`.`Vehiculo` (`idVehiculo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_RegistroEstacion_LineaMontajeEstacion1`
-    FOREIGN KEY (`LineaMontajeEstacion_IdLineaMontajeEstacion`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`LineaMontajeEstacion` (`IdLineaMontajeEstacion`)
+  CONSTRAINT `fk_RegistroEstacion_Estacion1`
+    FOREIGN KEY (`Estacion_idEstacion`)
+    REFERENCES `PlantaAutomotrizEnsambladora`.`Estacion` (`idEstacion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
