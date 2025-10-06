@@ -11,9 +11,9 @@ BEGIN
     ELSE
         -- Insertar pedido con ID manual
         INSERT INTO PedidoConcesionaria 
-            (idPedidoConcesionaria, Concesionaria_idConcesionaria, FechaDeEntregaEstimada, FechaDeEntregaReal, FechaPedido)
+            (idPedidoConcesionaria, Concesionaria_idConcesionaria, FechaDeEntregaEstimada, FechaPedido)
         VALUES 
-            (p_idPedido, p_idConcesionaria, p_fechaEntregaEstimada, p_fechaEntregaReal, p_fechaPedido);
+            (p_idPedido, p_idConcesionaria, p_fechaEntregaEstimada, p_fechaPedido);
         
         SET nResultado = 0;
         SET cMensaje = 'Pedido de concesionaria insertado correctamente.';
@@ -21,3 +21,11 @@ BEGIN
 END//
 DELIMITER ;
 
+SELECT 
+    lm.idLineaMontaje,
+    ma.idModeloAuto,
+    ma.modelo AS NombreModelo,
+    lm.CapacidadMaximaMes
+FROM LineaMontaje lm
+INNER JOIN ModeloAuto ma ON lm.ModeloAuto_idModeloAuto = ma.idModeloAuto
+ORDER BY lm.idLineaMontaje;
