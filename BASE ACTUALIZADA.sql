@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`Estacion` (
   `idEstacion` INT NOT NULL AUTO_INCREMENT,
   `actividad` VARCHAR(45) NULL,
   `LineaMontaje_idLineaMontaje` INT NOT NULL,
+  `orden` INT NULL,
   PRIMARY KEY (`idEstacion`),
   INDEX `fk_Estacion_LineaMontaje1_idx` (`LineaMontaje_idLineaMontaje` ASC) VISIBLE,
   CONSTRAINT `fk_Estacion_LineaMontaje1`
@@ -86,8 +87,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`PedidoConcesionaria` (
   `idPedidoConcesionaria` INT NOT NULL AUTO_INCREMENT,
   `Concesionaria_idConcesionaria` INT NOT NULL,
-  `FechaDeEntregaEstimada` DATE NOT NULL,
-  `FechaPedido` DATE NOT NULL,
+  `FechaDeEntregaEstimada` DATE NULL,
+  `FechaCierrePedido` DATE  NULL,
   PRIMARY KEY (`idPedidoConcesionaria`),
   INDEX `fk_PedidoConsesinaria_Consecionaria1_idx` (`Concesionaria_idConcesionaria` ASC) VISIBLE,
   CONSTRAINT `fk_PedidoConsesinaria_Consecionaria1`
@@ -109,26 +110,22 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `PlantaAutomotrizEnsambladora`.`InsumoEstacion`
+-- Table InsumoEstacion
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`InsumoEstacion` (
-  `Insumo_idInsumo` INT NOT NULL,
-  `Estacion_idEstacion` INT NOT NULL,
-  `Cantidad` FLOAT NOT NULL,
-  PRIMARY KEY (`Insumo_idInsumo`, `Estacion_idEstacion`),
-  INDEX `fk_Insumo_has_Estacion_Estacion1_idx` (`Estacion_idEstacion` ASC) VISIBLE,
-  INDEX `fk_Insumo_has_Estacion_Insumo1_idx` (`Insumo_idInsumo` ASC) VISIBLE,
-  CONSTRAINT `fk_Insumo_has_Estacion_Insumo1`
-    FOREIGN KEY (`Insumo_idInsumo`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`Insumo` (`idInsumo`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Insumo_has_Estacion_Estacion1`
-    FOREIGN KEY (`Estacion_idEstacion`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`Estacion` (`idEstacion`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS InsumoEstacion (
+    Insumo_idInsumo INT NOT NULL,
+    Estacion_idEstacion INT NOT NULL,
+    Cantidad FLOAT NOT NULL,
+    Stock INT DEFAULT 0,
+    PRIMARY KEY (Insumo_idInsumo, Estacion_idEstacion),
+    INDEX fk_Insumo_has_Estacion_Estacion1_idx (Estacion_idEstacion ASC) VISIBLE,
+    INDEX fk_Insumo_has_Estacion_Insumo1_idx (Insumo_idInsumo ASC) VISIBLE,
+    CONSTRAINT fk_Insumo_has_Estacion_Insumo1 FOREIGN KEY (Insumo_idInsumo)
+        REFERENCES Insumo (idInsumo) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_Insumo_has_Estacion_Estacion1 FOREIGN KEY (Estacion_idEstacion)
+        REFERENCES Estacion (idEstacion) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
 
 
 -- -----------------------------------------------------
@@ -156,13 +153,45 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `PlantaAutomotrizEnsambladora`.`Vehiculo`
+-- Table `PlantaAutomotrizEnsambladora`.`ModeloAuto_has_PedidoConcesionaria`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`ModeloAuto_has_PedidoConcesionaria` (
+  `PedidoConcesionaria_idPedidoConcesionaria` INT NOT NULL,
+  `ModeloAuto_idModeloAuto` INT NOT NULL,
+  `Cantidad` INT NOT NULL,
+  PRIMARY KEY (`PedidoConcesionaria_idPedidoConcesionaria`, `ModeloAuto_idModeloAuto`),
+  INDEX `fk_ModeloAuto_has_PedidoConsesinaria_PedidoConsesinaria1_idx` (`PedidoConcesionaria_idPedidoConcesionaria` ASC) VISIBLE,
+  INDEX `fk_ModeloAuto_has_PedidoConsesinaria_ModeloAuto1_idx` (`ModeloAuto_idModeloAuto` ASC) VISIBLE,
+  CONSTRAINT `fk_ModeloAuto_has_PedidoConsesinaria_ModeloAuto1`
+    FOREIGN KEY (`ModeloAuto_idModeloAuto`)
+    REFERENCES `PlantaAutomotrizEnsambladora`.`ModeloAuto` (`idModeloAuto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ModeloAuto_has_PedidoConsesinaria_PedidoConsesinaria1`
+    FOREIGN KEY (`PedidoConcesionaria_idPedidoConcesionaria`)
+    REFERENCES `PlantaAutomotrizEnsambladora`.`PedidoConcesionaria` (`idPedidoConcesionaria`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `PlantaAutomotrizEnsambladora`.`Vehiculo` con estado
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`Vehiculo` (
   `idVehiculo` INT NOT NULL AUTO_INCREMENT,
-  `NumeroDeChasis` INT NOT NULL,
-  PRIMARY KEY (`idVehiculo`))
-ENGINE = InnoDB;
+  `fk_PedidoConcesionaria_idPedidoConcesionaria` INT NOT NULL,
+  `fk_has_PedidoConcesionaria_ModeloAuto_idModeloAuto` INT NOT NULL,
+  `estado` ENUM('Pendiente', 'Produccion', 'Finalizado') NOT NULL DEFAULT 'Pendiente',
+  PRIMARY KEY (`idVehiculo`),
+  INDEX `fk_Vehiculo_ModeloAuto_has_PedidoConcesionaria1_idx` (`fk_PedidoConcesionaria_idPedidoConcesionaria` ASC, `fk_has_PedidoConcesionaria_ModeloAuto_idModeloAuto` ASC) VISIBLE,
+  CONSTRAINT `fk_Vehiculo_ModeloAuto_has_PedidoConcesionaria1`
+    FOREIGN KEY (`fk_PedidoConcesionaria_idPedidoConcesionaria`, `fk_has_PedidoConcesionaria_ModeloAuto_idModeloAuto`)
+    REFERENCES `PlantaAutomotrizEnsambladora`.`ModeloAuto_has_PedidoConcesionaria` (`PedidoConcesionaria_idPedidoConcesionaria`, `ModeloAuto_idModeloAuto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
+
 
 
 -- -----------------------------------------------------
@@ -191,45 +220,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `PlantaAutomotrizEnsambladora`.`ModeloAuto_has_PedidoConcesionaria`
+-- Table PedidoInsumoDetalle (nombre corregido)
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`ModeloAuto_has_PedidoConcesionaria` (
-  `ModeloAuto_idModeloAuto` INT NOT NULL,
-  `PedidoConcesionaria_idPedidoConcesionaria` INT NOT NULL,
-  `Cantidad` INT NOT NULL,
-  PRIMARY KEY (`ModeloAuto_idModeloAuto`, `PedidoConcesionaria_idPedidoConcesionaria`),
-  INDEX `fk_ModeloAuto_has_PedidoConsesinaria_PedidoConsesinaria1_idx` (`PedidoConcesionaria_idPedidoConcesionaria` ASC) VISIBLE,
-  INDEX `fk_ModeloAuto_has_PedidoConsesinaria_ModeloAuto1_idx` (`ModeloAuto_idModeloAuto` ASC) VISIBLE,
-  CONSTRAINT `fk_ModeloAuto_has_PedidoConsesinaria_ModeloAuto1`
-    FOREIGN KEY (`ModeloAuto_idModeloAuto`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`ModeloAuto` (`idModeloAuto`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ModeloAuto_has_PedidoConsesinaria_PedidoConsesinaria1`
-    FOREIGN KEY (`PedidoConcesionaria_idPedidoConcesionaria`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`PedidoConcesionaria` (`idPedidoConcesionaria`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `PlantaAutomotrizEnsambladora`.`PedidioInsumoDetalle`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `PlantaAutomotrizEnsambladora`.`PedidioInsumoDetalle` (
-  `idPedidioInsumoDetalle` INT NOT NULL AUTO_INCREMENT,
-  `InsumoProveedor_InsumoProvedorId` INT NOT NULL,
-  `Cantidad` INT NOT NULL,
-  `FechaPedido` DATE NULL,
-  PRIMARY KEY (`idPedidioInsumoDetalle`),
-  INDEX `fk_PedidioInsumoDetalle_InsumoProveedor1_idx` (`InsumoProveedor_InsumoProvedorId` ASC) VISIBLE,
-  CONSTRAINT `fk_PedidioInsumoDetalle_InsumoProveedor1`
-    FOREIGN KEY (`InsumoProveedor_InsumoProvedorId`)
-    REFERENCES `PlantaAutomotrizEnsambladora`.`InsumoProveedor` (`InsumoProvedorId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
+CREATE TABLE IF NOT EXISTS PedidoInsumoDetalle (
+    idPedidoInsumoDetalle INT NOT NULL AUTO_INCREMENT,
+    InsumoProveedor_InsumoProvedorId INT NOT NULL,
+    Cantidad INT NOT NULL,
+    FechaPedido DATE NULL,
+    PRIMARY KEY (idPedidoInsumoDetalle),
+    INDEX fk_PedidoInsumoDetalle_InsumoProveedor1_idx (InsumoProveedor_InsumoProvedorId ASC) VISIBLE,
+    CONSTRAINT fk_PedidoInsumoDetalle_InsumoProveedor1 FOREIGN KEY (InsumoProveedor_InsumoProvedorId)
+        REFERENCES InsumoProveedor (InsumoProvedorId) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
